@@ -1,24 +1,93 @@
-# Compiled class file
-*.class
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-# Log file
-*.log
+public class ResistenciaTrilho {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Cálculo da Resistência de um Trilho de Aço");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 250);
+        
+        JPanel panel = new JPanel(new GridBagLayout());
+        frame.add(panel);
+        placeComponents(panel);
+        
+        frame.setVisible(true);
+    }
 
-# BlueJ files
-*.ctxt
+    private static void placeComponents(JPanel panel) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Padding
+        
+        JLabel labelAreaSecao = new JLabel("Área da Seção (cm²):");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(labelAreaSecao, gbc);
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+        JTextField areaSecaoText = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panel.add(areaSecaoText, gbc);
+        areaSecaoText.setText("56.0"); // Valor padrão
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+        JLabel labelComprimento = new JLabel("Comprimento (km):");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(labelComprimento, gbc);
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+        JTextField comprimentoText = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panel.add(comprimentoText, gbc);
+        comprimentoText.setText("10.0"); // Valor padrão
+
+        JLabel labelResistividade = new JLabel("Resistividade (Ω·m):");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(labelResistividade, gbc);
+
+        JTextField resistividadeText = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panel.add(resistividadeText, gbc);
+        resistividadeText.setText("3.00e-1"); // Valor padrão
+
+        JButton calcularButton = new JButton("Calcular");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(calcularButton, gbc);
+
+        JLabel resultadoLabel = new JLabel("Resistência: ");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        panel.add(resultadoLabel, gbc);
+
+        calcularButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    double areaSecao = Double.parseDouble(areaSecaoText.getText());
+                    double comprimento = Double.parseDouble(comprimentoText.getText());
+                    double resistividade = Double.parseDouble(resistividadeText.getText());
+
+                    // Convertendo a área de cm² para m²
+                    double areaSecaoM2 = areaSecao * 1e-4;
+
+                    // Convertendo o comprimento de km para metros
+                    double comprimentoM = comprimento * 1e3;
+
+                    // Calculando a resistência usando a fórmula R = ρ * L / A
+                    double resistencia = (resistividade * comprimentoM) / areaSecaoM2;
+
+                    resultadoLabel.setText(String.format("Resistência: %.4f Ω", resistencia));
+                } catch (NumberFormatException ex) {
+                    resultadoLabel.setText("Por favor, insira valores válidos.");
+                }
+            }
+        });
+    }
+}
